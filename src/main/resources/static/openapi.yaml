@@ -226,6 +226,82 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiResponse'
+  /order/{orderId}/place:
+    patch:
+      tags:
+        - order
+      summary: makes order placed
+      description: ''
+      operationId: placeOrder
+      parameters:
+        - name: orderId
+          in: path
+          description: Id of order to place
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '500':
+          description: ServerError
+        '200':
+          description: Sucessful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/orderStatement'
+
+  /order/{orderId}/approve:
+    patch:
+      tags:
+        - order
+      summary: makes order approved
+      description: ''
+      operationId: approveOrder
+      parameters:
+        - name: orderId
+          in: path
+          description: Id of order to place
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '500':
+          description: ServerError
+        '200':
+          description: Sucessful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/orderStatement'
+  /order/{orderId}/delivered:
+    patch:
+      tags:
+        - order
+      summary: makes order delivered
+      description: ''
+      operationId: deliverOrder
+      parameters:
+        - name: orderId
+          in: path
+          description: Id of order to place
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '500':
+          description: ServerError
+        '200':
+          description: Sucessful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/orderStatement'
+
+
+
 
 
 components:
