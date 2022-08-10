@@ -6,8 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class Apiweek5Application {
 
-    public static void main(String[] args) {
-        SpringApplication.run(Apiweek5Application.class, args);
-    }
-
+  public static void main(String[] args) {
+    SpringApplication.run(Apiweek5Application.class, args);
+  }
 }

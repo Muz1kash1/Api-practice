@@ -14,6 +14,85 @@ tags:
     description: Access to orders
 
 paths:
+  /order/{startDateTime}/{endDateTime}:
+    get:
+      tags:
+        - order
+      summary: Find all orders between two dates
+      description: All orders from begin to end
+      operationId: Orders between dates
+      parameters:
+        - name: startDateTime
+          in: path
+          description: Date of start
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - name: endDateTime
+          in: path
+          description: Date of end
+          required: true
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/orderDTO'
+            application/csv:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/orderDTO'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: order not found
+        '500':
+          description: Server Error
+  /order/status/{status}:
+    get:
+      tags:
+        - order
+      summary: Find all orders of status
+      description: All orders with this status
+      operationId: Orders by status
+      parameters:
+        - name: status
+          in: path
+          description: status of order
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/orderDTO'
+            application/csv:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/orderDTO'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: order not found
+        '500':
+          description: Server Error
+
+
+
   /order:
     put:
       tags:
@@ -35,6 +114,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/orderDTO'
+
         '400':
           description: Invalid ID supplied
         '404':
@@ -47,17 +127,21 @@ paths:
     get:
       tags:
         - order
-      summary:  Find all orders
+      summary: Find all orders
       description: Returns all order
       operationId: getAllOrders
       responses:
         '200':
           description: successful operation
           content:
-            application:json:
+            application/json:
               schema:
                 type: array
-                description: Array of orders
+                items:
+                  $ref: '#/components/schemas/orderDTO'
+            application/csv:
+              schema:
+                type: array
                 items:
                   $ref: '#/components/schemas/orderDTO'
         '400':
@@ -117,7 +201,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/orderStatement'
+                $ref: '#/components/schemas/orderDTO'
+            application/csv:
+              schema:
+                $ref: '#/components/schemas/orderDTO'
         '400':
           description: Invalid ID supplied
         '404':
@@ -127,7 +214,7 @@ paths:
     patch:
       tags:
         - order
-      summary : Update a existing order
+      summary: Update a existing order
       description: Update an existing order by ID
       operationId: patchOrder
       parameters:
@@ -170,12 +257,6 @@ paths:
       description: delete a order
       operationId: deleteorder
       parameters:
-        - name: api_key
-          in: header
-          description: ''
-          required: false
-          schema:
-            type: string
         - name: orderId
           in: path
           description: order id to delete
@@ -190,115 +271,6 @@ paths:
           description: Server Error
 
 
-  /order/{orderId}/uploadCVS:
-    post:
-      tags:
-        - order
-      summary: uploads an svc
-      description: ''
-      operationId: uploadFile
-      parameters:
-        - name: orderId
-          in: path
-          description: ID of order to update
-          required: true
-          schema:
-            type: integer
-            format: int64
-        - name: additionalMetadata
-          in: query
-          description: Additional Metadata
-          required: false
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/octet-stream:
-            schema:
-              type: string
-              format: binary
-      responses:
-        '500':
-          description: Server Error
-        '200':
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'
-  /order/{orderId}/place:
-    patch:
-      tags:
-        - order
-      summary: makes order placed
-      description: ''
-      operationId: placeOrder
-      parameters:
-        - name: orderId
-          in: path
-          description: Id of order to place
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '500':
-          description: ServerError
-        '200':
-          description: Sucessful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/orderStatement'
-
-  /order/{orderId}/approve:
-    patch:
-      tags:
-        - order
-      summary: makes order approved
-      description: ''
-      operationId: approveOrder
-      parameters:
-        - name: orderId
-          in: path
-          description: Id of order to place
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '500':
-          description: ServerError
-        '200':
-          description: Sucessful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/orderStatement'
-  /order/{orderId}/delivered:
-    patch:
-      tags:
-        - order
-      summary: makes order delivered
-      description: ''
-      operationId: deliverOrder
-      parameters:
-        - name: orderId
-          in: path
-          description: Id of order to place
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '500':
-          description: ServerError
-        '200':
-          description: Sucessful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/orderStatement'
 
 
 
@@ -307,6 +279,9 @@ paths:
 components:
   schemas:
     orderDTO:
+      required:
+        - productID
+        - quantity
       type: object
       properties:
         id:
@@ -345,56 +320,16 @@ components:
           maximum: 100
           format: int32
           example: 8
-        date:
-          type: string
-          format: date-time
         complete:
           type: boolean
-
-    orderStatement:
-      required:
-        - name
-        - csvUrls
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-          example: 10
-        name:
-          type: string
-          example: bff
-
-        photoUrls:
-          type: array
-          items:
-            type: string
-
-
         status:
           type: string
-          description: order status
+          description: Order Status
+          example: approved
           enum:
-            - available
-            - pending
-            - sold
+            - placed
+            - approved
+            - delivered
 
-    ApiResponse:
-      type: object
-      properties:
-        code:
-          type: integer
-          format: int32
-        type:
-          type: string
-        message:
-          type: string
 
-  requestBodies:
-    order:
-      description: order object that needs to be added
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/orderStatement'
 
