@@ -44,7 +44,7 @@ public class ControllerImpl implements OrderApi {
    * @param status status of order (required)
    * @return
    */
-  @RequestMapping("/order/{status}")
+  @RequestMapping("/order/status/{status}")
   @Override
   public ResponseEntity<List<OrderDTO>> ordersByStatus(String status) {
     return ResponseEntity.ok().body(ordersService.getAllOrdersByStatus(status));

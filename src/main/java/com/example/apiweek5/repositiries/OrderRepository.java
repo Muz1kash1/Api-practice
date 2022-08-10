@@ -2,6 +2,7 @@ package com.example.apiweek5.repositiries;
 
 import org.openapitools.model.OrderDTO;
 import org.openapitools.model.OrderUpdateDTO;
+import org.openapitools.model.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,7 +46,7 @@ public class OrderRepository {
 
   public OrderDTO updateOrder(Long id, OrderUpdateDTO orderUpdateDTO) {
     OrderDTO orderDTO = orderRepo.get(id);
-    orderDTO.setStatus(OrderDTO.StatusEnum.valueOf(orderUpdateDTO.getStatus().getValue()));
+    orderDTO.setStatus(orderUpdateDTO.getStatus());
     orderDTO.setQuantity(orderUpdateDTO.getQuantity());
     orderDTO.setComplete(orderUpdateDTO.getComplete());
     orderRepo.replace(id, orderDTO);

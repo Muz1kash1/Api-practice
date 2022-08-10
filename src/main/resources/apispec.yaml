@@ -14,7 +14,7 @@ tags:
     description: Access to orders
 
 paths:
-  /order/{startDateTime}/{endDateTime}:
+  /order/period/{startDateTime}/{endDateTime}:
     get:
       tags:
         - order
@@ -56,6 +56,7 @@ paths:
           description: order not found
         '500':
           description: Server Error
+
   /order/status/{status}:
     get:
       tags:
@@ -278,6 +279,14 @@ paths:
 
 components:
   schemas:
+    status:
+      type: string
+      description: Order Status
+      example: approved
+      enum:
+        - placed
+        - approved
+        - delivered
     orderDTO:
       required:
         - productID
@@ -302,13 +311,7 @@ components:
           type: string
           format: date-time
         status:
-          type: string
-          description: Order Status
-          example: approved
-          enum:
-            - placed
-            - approved
-            - delivered
+          $ref: '#/components/schemas/status'
         complete:
           type: boolean
     orderUpdateDTO:
@@ -323,13 +326,7 @@ components:
         complete:
           type: boolean
         status:
-          type: string
-          description: Order Status
-          example: approved
-          enum:
-            - placed
-            - approved
-            - delivered
+          $ref: '#/components/schemas/status'
 
 
 

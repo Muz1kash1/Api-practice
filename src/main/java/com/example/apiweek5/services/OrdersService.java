@@ -2,6 +2,7 @@ package com.example.apiweek5.services;
 
 import com.example.apiweek5.repositiries.OrderRepository;
 import org.openapitools.model.OrderDTO;
+import org.openapitools.model.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +37,7 @@ public class OrdersService {
             .filter(
                 (longOrderDTOEntry ->
                     longOrderDTOEntry.getValue().getStatus()
-                        == OrderDTO.StatusEnum.valueOf(status)))
+                        == Status.valueOf(status)))
             .toList();
     for (Map.Entry<Long, OrderDTO> entry : entryList) {
       ordersByStatus.add(entry.getValue());
