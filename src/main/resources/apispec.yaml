@@ -24,6 +24,7 @@ paths:
       parameters:
         - name: status
           in: query
+          example: APPROVED
           description: status of order
           required: true
           schema:
@@ -32,6 +33,7 @@ paths:
           in: query
           description: Date of start
           required: true
+          example: 2021-08-11T10:48:01.679Z
           schema:
             type: string
             format: date-time
@@ -39,6 +41,7 @@ paths:
           in: query
           description: Date of end
           required: true
+          example: 2022-08-10T10:48:01.679Z
           schema:
             type: string
             format: date-time
@@ -135,6 +138,7 @@ paths:
           in: path
           description: Id of order to replace
           required: true
+          example: 1
           schema:
             $ref: '#/components/schemas/orderId'
       requestBody:
@@ -190,6 +194,7 @@ paths:
           in: path
           description: ID of order to return
           required: true
+          example: 1
           schema:
             $ref: '#/components/schemas/orderId'
       responses:
@@ -235,6 +240,7 @@ paths:
       parameters:
         - name: orderId
           in: path
+          example: 1
           description: ID of order to return
           required: true
           schema:
@@ -295,6 +301,7 @@ paths:
       parameters:
         - name: orderId
           in: path
+          example: 1
           description: order id to delete
           required: true
           schema:
@@ -325,12 +332,13 @@ components:
   schemas:
     orderId:
       description: order id to delete
+      example: 23
       type: integer
       format: int64
     status:
       type: string
       description: Order Status
-      example: approved
+      example: APPROVED
       enum:
         - placed
         - approved
@@ -359,10 +367,12 @@ components:
         date:
           type: string
           format: date-time
+          example: 2022-08-10T10:48:01.679Z
         status:
           $ref: '#/components/schemas/status'
         complete:
           type: boolean
+          example: true
     orderUpdateDTO:
       description: Order update response object
       type: object
@@ -375,6 +385,7 @@ components:
           example: 8
         complete:
           type: boolean
+          example: false
         status:
           $ref: '#/components/schemas/status'
 
