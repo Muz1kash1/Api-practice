@@ -1,5 +1,6 @@
 package com.example.apiweek5.controllers;
 
+import com.example.apiweek5.RestResponseEntityExceptionHandler;
 import com.example.apiweek5.repositiries.OrderRepository;
 import com.example.apiweek5.services.OrdersService;
 import org.openapitools.api.OrderApi;
@@ -8,16 +9,19 @@ import org.openapitools.model.OrderUpdateDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
-
+import java.util.NoSuchElementException;
 @RequestMapping("/")
 @RestController
 public class ControllerImpl implements OrderApi {
+  @Autowired
+  RestResponseEntityExceptionHandler restResponseEntityExceptionHandler;
   @Autowired OrderRepository orderRepository;
   @Autowired OrdersService ordersService;
   /**
@@ -97,7 +101,6 @@ public class ControllerImpl implements OrderApi {
   public ResponseEntity<OrderDTO> updateOrder(Long orderId, OrderDTO orderDTO) {
     return ResponseEntity.accepted().body(orderRepository.replaceOrder(orderId,orderDTO));
   }
-
 
 
 }
