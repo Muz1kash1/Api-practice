@@ -93,4 +93,8 @@ public class ControllerImpl implements OrderApi {
    * @param orderDTO Replace an existent order (required)
    * @return
    */
+  @Override
+  public ResponseEntity<OrderDTO> updateOrder(Long orderId, OrderDTO orderDTO) {
+    return ResponseEntity.accepted().body(orderRepository.replaceOrder(orderId,orderDTO));
+  }
 }

@@ -2,10 +2,8 @@ package com.example.apiweek5.repositiries;
 
 import org.openapitools.model.OrderDTO;
 import org.openapitools.model.OrderUpdateDTO;
-import org.openapitools.model.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +38,7 @@ public class OrderRepository {
   public void deleteOrder(Long orderId) {
     orderRepo.remove(orderId);
   }
+
   public OrderDTO getOrder(Long id) {
     return orderRepo.get(id);
   }
@@ -49,6 +48,11 @@ public class OrderRepository {
     orderDTO.setStatus(orderUpdateDTO.getStatus());
     orderDTO.setQuantity(orderUpdateDTO.getQuantity());
     orderDTO.setComplete(orderUpdateDTO.getComplete());
+    orderRepo.replace(id, orderDTO);
+    return orderRepo.get(id);
+  }
+
+  public OrderDTO replaceOrder(Long id, OrderDTO orderDTO) {
     orderRepo.replace(id, orderDTO);
     return orderRepo.get(id);
   }
