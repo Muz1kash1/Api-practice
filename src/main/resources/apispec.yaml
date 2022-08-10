@@ -136,8 +136,7 @@ paths:
           description: Id of order to replace
           required: true
           schema:
-            type: integer
-            format: int64
+            $ref: '#/components/schemas/orderId'
       requestBody:
         description: Replace an existent order
         content:
@@ -192,8 +191,7 @@ paths:
           description: ID of order to return
           required: true
           schema:
-            type: integer
-            format: int64
+            $ref: '#/components/schemas/orderId'
       responses:
         '200':
           description: successful operation
@@ -240,8 +238,7 @@ paths:
           description: ID of order to return
           required: true
           schema:
-            type: integer
-            format: int64
+            $ref: '#/components/schemas/orderId'
       requestBody:
         description: Update an existent order
         content:
@@ -301,8 +298,7 @@ paths:
           description: order id to delete
           required: true
           schema:
-            type: integer
-            format: int64
+            $ref: '#/components/schemas/orderId'
       responses:
         '200':
           description: Sucess
@@ -327,6 +323,10 @@ paths:
 
 components:
   schemas:
+    orderId:
+      description: order id to delete
+      type: integer
+      format: int64
     status:
       type: string
       description: Order Status
