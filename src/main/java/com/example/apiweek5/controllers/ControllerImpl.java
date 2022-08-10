@@ -4,33 +4,40 @@ import com.example.apiweek5.RestResponseEntityExceptionHandler;
 import com.example.apiweek5.repositiries.OrderRepository;
 import com.example.apiweek5.services.OrdersService;
 import org.openapitools.api.OrderApi;
+import org.openapitools.api.OrdersApi;
 import org.openapitools.model.OrderDTO;
 import org.openapitools.model.OrderUpdateDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.NativeWebRequest;
 
 import java.time.OffsetDateTime;
-import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.NoSuchElementException;
-@RequestMapping("/")
+import java.util.Optional;
+
+
 @RestController
-public class ControllerImpl implements OrderApi {
-  @Autowired
-  RestResponseEntityExceptionHandler restResponseEntityExceptionHandler;
+public class ControllerImpl implements OrderApi, OrdersApi {
+  @Autowired RestResponseEntityExceptionHandler restResponseEntityExceptionHandler;
   @Autowired OrderRepository orderRepository;
+
+  /**
+   * @return
+   */
+  @Override
+  public Optional<NativeWebRequest> getRequest() {
+    return OrderApi.super.getRequest();
+  }
+
   @Autowired OrdersService ordersService;
   /**
    * @return
    */
   @Override
   public ResponseEntity<List<OrderDTO>> getAllOrders() {
-    return ResponseEntity.ok()
-        .body(orderRepository.getOrderList());
+    return ResponseEntity.ok().body(orderRepository.getOrderList());
   }
 
   /**
@@ -59,7 +66,7 @@ public class ControllerImpl implements OrderApi {
    * @return
    */
   @Override
-  public ResponseEntity<OrderDTO> addorder(OrderDTO orderDTO) {
+  public ResponseEntity<OrderDTO> addOrder(OrderDTO orderDTO) {
     orderRepository.addOrder(orderDTO);
     return ResponseEntity.accepted().body(orderRepository.getOrder(orderDTO.getProductID()));
   }
@@ -69,7 +76,7 @@ public class ControllerImpl implements OrderApi {
    * @return
    */
   @Override
-  public ResponseEntity<Void> deleteorder(Long orderId) {
+  public ResponseEntity<Void> deleteOrder(Long orderId) {
     orderRepository.deleteOrder(orderId);
     return ResponseEntity.noContent().build();
   }
@@ -79,7 +86,7 @@ public class ControllerImpl implements OrderApi {
    * @return
    */
   @Override
-  public ResponseEntity<OrderDTO> getorderById(Long orderId) {
+  public ResponseEntity<OrderDTO> getOrderById(Long orderId) {
     return ResponseEntity.ok().body(orderRepository.getOrder(orderId));
   }
 
@@ -90,7 +97,7 @@ public class ControllerImpl implements OrderApi {
    */
   @Override
   public ResponseEntity<OrderDTO> patchOrder(Long orderId, OrderUpdateDTO orderUpdateDTO) {
-    return ResponseEntity.ok().body(orderRepository.updateOrder(orderId,orderUpdateDTO));
+    return ResponseEntity.ok().body(orderRepository.updateOrder(orderId, orderUpdateDTO));
   }
 
   /**
@@ -99,8 +106,6 @@ public class ControllerImpl implements OrderApi {
    */
   @Override
   public ResponseEntity<OrderDTO> updateOrder(Long orderId, OrderDTO orderDTO) {
-    return ResponseEntity.accepted().body(orderRepository.replaceOrder(orderId,orderDTO));
+    return ResponseEntity.accepted().body(orderRepository.replaceOrder(orderId, orderDTO));
   }
-
-
 }
