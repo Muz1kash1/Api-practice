@@ -14,126 +14,35 @@ tags:
     description: Access to orders
 
 paths:
-  /order/period/{startDateTime}/{endDateTime}:
-    get:
-      tags:
-        - order
-      summary: Find all orders between two dates
-      description: All orders from begin to end
-      operationId: Orders between dates
-      parameters:
-        - name: startDateTime
-          in: path
-          description: Date of start
-          required: true
-          schema:
-            type: string
-            format: date-time
-        - name: endDateTime
-          in: path
-          description: Date of end
-          required: true
-          schema:
-            type: string
-            format: date-time
-      responses:
-        '200':
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/orderDTO'
-            application/csv:
-              {}
-        '400':
-          description: Invalid ID supplied
-          content:
-            application/problem+json:
-              schema:
-                type: string
-        '409':
-          description: Illegal State
-          content:
-            application/problem+json:
-              schema:
-                type: string
-        '404':
-          description: order not found
-          content:
-            application/problem+json:
-              schema:
-                type: string
-        '500':
-          description: Server Error
-          content:
-            application/problem+json:
-              schema:
-                type: string
-
-  /order/status/{status}:
-    get:
-      tags:
-        - order
-      summary: Find all orders of status
-      description: All orders with this status
-      operationId: Orders by status
-      parameters:
-        - name: status
-          in: path
-          description: status of order
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/orderDTO'
-            application/csv:
-              {}
-
-        '400':
-          description: Invalid ID supplied
-          content:
-            application/problem+json:
-              schema:
-                type: string
-        '404':
-          description: order not found
-          content:
-            application/problem+json:
-              schema:
-                type: string
-        '409':
-          description: Illegal State
-          content:
-            application/problem+json:
-              schema:
-                type: string
-        '500':
-          description: Server Error
-          content:
-            application/problem+json:
-              schema:
-                type: string
-
-
-
   /orders:
-
-
     get:
       tags:
         - order
       summary: Find all orders
       description: Returns all order
       operationId: getAllOrders
+      parameters:
+        - name: status
+          in: query
+          description: status of order
+          required: true
+          schema:
+            type: string
+        - name: startDateTime
+          in: query
+          description: Date of start
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - name: endDateTime
+          in: query
+          description: Date of end
+          required: true
+          schema:
+            type: string
+            format: date-time
+
       responses:
         '200':
           description: successful operation
@@ -144,7 +53,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/orderDTO'
             application/csv:
-              {}
+              { }
 
         '400':
           description: Invalid ID supplied
@@ -293,7 +202,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/orderDTO'
             application/csv:
-              {}
+              { }
 
         '400':
           description: Invalid ID supplied

@@ -10,6 +10,7 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 @Service
 public class OrdersService {
@@ -36,12 +37,18 @@ public class OrdersService {
         orderRepository.getOrderRepo().entrySet().stream()
             .filter(
                 (longOrderDTOEntry ->
-                    longOrderDTOEntry.getValue().getStatus()
-                        == Status.valueOf(status)))
+                    longOrderDTOEntry.getValue().getStatus() == Status.valueOf(status)))
             .toList();
     for (Map.Entry<Long, OrderDTO> entry : entryList) {
       ordersByStatus.add(entry.getValue());
     }
     return ordersByStatus;
+  }
+
+  public List<OrderDTO> getAllOrdersByStatusAndPeriod(
+      String status, OffsetDateTime start, OffsetDateTime end) {
+    return Stream.concat(
+            getAllOrdersByStatus(status).stream(), getAllOrdersByDates(start, end).stream())
+        .toList();
   }
 }

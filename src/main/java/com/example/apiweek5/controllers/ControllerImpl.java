@@ -3,13 +3,11 @@ package com.example.apiweek5.controllers;
 import com.example.apiweek5.RestResponseEntityExceptionHandler;
 import com.example.apiweek5.repositiries.OrderRepository;
 import com.example.apiweek5.services.OrdersService;
-import org.openapitools.api.OrderApi;
 import org.openapitools.api.OrdersApi;
 import org.openapitools.model.OrderDTO;
 import org.openapitools.model.OrderUpdateDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.NativeWebRequest;
 
@@ -17,48 +15,32 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 
-
 @RestController
-public class ControllerImpl implements OrderApi, OrdersApi {
+public class ControllerImpl implements OrdersApi {
   @Autowired RestResponseEntityExceptionHandler restResponseEntityExceptionHandler;
   @Autowired OrderRepository orderRepository;
+  @Autowired OrdersService ordersService;
+
+  /**
+   * @return
+   */
+
+  /**
+   * @return
+   */
+  @Override
+  public ResponseEntity<List<OrderDTO>> getAllOrders(
+      String status, OffsetDateTime startDateTime, OffsetDateTime endDateTime) {
+    return ResponseEntity.ok()
+        .body(ordersService.getAllOrdersByStatusAndPeriod(status, startDateTime, endDateTime));
+  }
 
   /**
    * @return
    */
   @Override
   public Optional<NativeWebRequest> getRequest() {
-    return OrderApi.super.getRequest();
-  }
-
-  @Autowired OrdersService ordersService;
-  /**
-   * @return
-   */
-  @Override
-  public ResponseEntity<List<OrderDTO>> getAllOrders() {
-    return ResponseEntity.ok().body(orderRepository.getOrderList());
-  }
-
-  /**
-   * @param startDateTime Date of start (required)
-   * @param endDateTime Date of end (required)
-   * @return
-   */
-  @Override
-  public ResponseEntity<List<OrderDTO>> ordersBetweenDates(
-      OffsetDateTime startDateTime, OffsetDateTime endDateTime) {
-    return ResponseEntity.ok().body(ordersService.getAllOrdersByDates(startDateTime, endDateTime));
-  }
-
-  /**
-   * @param status status of order (required)
-   * @return
-   */
-  @RequestMapping("/order/status/{status}")
-  @Override
-  public ResponseEntity<List<OrderDTO>> ordersByStatus(String status) {
-    return ResponseEntity.ok().body(ordersService.getAllOrdersByStatus(status));
+    return OrdersApi.super.getRequest();
   }
 
   /**
