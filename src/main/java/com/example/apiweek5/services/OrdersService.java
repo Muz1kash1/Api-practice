@@ -1,11 +1,17 @@
 package com.example.apiweek5.services;
 
 import com.example.apiweek5.repositiries.OrderRepository;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVRecord;
 import org.openapitools.model.OrderDTO;
 import org.openapitools.model.Status;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,11 +58,27 @@ public class OrdersService {
         .toList();
   }
 
-  public List<OrderDTO> addOrderList(List<String> requestBody) {
+  public List<OrderDTO> addOrderList(Resource resource) {
     List<OrderDTO> orderDTOList = new ArrayList<>();
-    for (String raw : requestBody) {
-      orderDTOList.add(OrderMapper.map(raw));
-      orderRepository.addOrder(OrderMapper.map(raw));
+
+    try {
+      Reader reader = new InputStreamReader(resource.getInputStream());
+      Iterable<CSVRecord> records = CSVFormat.DEFAULT.parse(reader);
+      for (CSVRecord record : records) {
+        if (record.stream().toList().size() > 2) {
+          OrderDTO tempDTO = new OrderDTO();
+          tempDTO.setId(record.stream().toList().get(0));
+          tempDTO.setProductID(Long.getLong(record.stream().toList().get(1)));
+          tempDTO.setQuantity(Integer.getInteger(record.stream().toList().get(2)));
+          tempDTO.setDate(OffsetDateTime.parse(record.stream().toList().get(3)));
+          tempDTO.setStatus(Status.valueOf(record.stream().toList().get(4)));
+          tempDTO.setComplete(Boolean.getBoolean(record.stream().toList().get(5)));
+          orderRepository.addOrder(tempDTO);
+          orderDTOList.add(tempDTO);
+        }
+      }
+    } catch (IOException e) {
+      throw new RuntimeException(e);
     }
     return orderDTOList;
   }

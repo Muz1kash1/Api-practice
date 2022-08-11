@@ -133,7 +133,8 @@ paths:
         content:
           text/csv:
             schema:
-              {}
+              type: string
+              format: binary
         required: true
       responses:
         '202':

@@ -7,6 +7,7 @@ import org.openapitools.api.OrdersApi;
 import org.openapitools.model.OrderDTO;
 import org.openapitools.model.OrderUpdateDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -51,7 +52,8 @@ public class ControllerImpl implements OrdersApi {
   @Override
   public ResponseEntity<OrderDTO> addOrder(OrderDTO orderDTO) {
     orderRepository.addOrder(orderDTO);
-    return ResponseEntity.created(URI.create("http://localhost:8080/orders/" + orderDTO.getProductID()))
+    return ResponseEntity.created(
+            URI.create("http://localhost:8080/orders/" + orderDTO.getProductID()))
         .body(orderRepository.getOrder(orderDTO.getProductID()));
   }
 
@@ -97,14 +99,8 @@ public class ControllerImpl implements OrdersApi {
    * @param body Put order list (required)
    * @return
    */
-
-  /**
-   * @param requestBody Put order list (required)
-   * @return
-   */
   @Override
-  public ResponseEntity<List<OrderDTO>> uploadOrderList(Object requestBody) {
-    return ResponseEntity.accepted()
-        .body(ordersService.addOrderList(List.of(requestBody.toString())));
+  public ResponseEntity<List<OrderDTO>> uploadOrderList(Resource body) {
+    return ResponseEntity.accepted().body(ordersService.addOrderList(body));
   }
 }
