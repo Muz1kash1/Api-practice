@@ -14,6 +14,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -68,8 +69,8 @@ public class OrdersService {
         if (record.stream().toList().size() > 2) {
           OrderDTO tempDTO = new OrderDTO();
           tempDTO.setId(record.stream().toList().get(0));
-          tempDTO.setProductID(Long.getLong(record.stream().toList().get(1)));
-          tempDTO.setQuantity(Integer.getInteger(record.stream().toList().get(2)));
+          tempDTO.setProductID(Long.parseLong(record.stream().toList().get(1)));
+          tempDTO.setQuantity(Integer.parseInt(record.stream().toList().get(2)));
           tempDTO.setDate(OffsetDateTime.parse(record.stream().toList().get(3)));
           tempDTO.setStatus(Status.valueOf(record.stream().toList().get(4)));
           tempDTO.setComplete(Boolean.getBoolean(record.stream().toList().get(5)));
@@ -80,6 +81,7 @@ public class OrdersService {
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
+    orderDTOList.sort(Comparator.comparing(OrderDTO::getDate));
     return orderDTOList;
   }
 }
