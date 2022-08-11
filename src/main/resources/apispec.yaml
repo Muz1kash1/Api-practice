@@ -122,6 +122,48 @@ paths:
             application/problem+json:
               schema:
                 type: string
+    put:
+      tags:
+        - order
+      summary: Upload order list from csv file
+      description: Upload order list from csv file
+      operationId: uploadOrderList
+      requestBody:
+        description: Put order list
+        content:
+          application/csv:
+            schema:
+              type: array
+              items:
+                type: string
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/orderDTO'
+        '405':
+          description: Invalid input
+          content:
+            application/problem+json:
+              schema:
+                type: string
+        '409':
+          description: Illegal State
+          content:
+            application/problem+json:
+              schema:
+                type: string
+        '500':
+          description: Server Error
+          content:
+            application/problem+json:
+              schema:
+                type: string
 
 
 

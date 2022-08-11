@@ -19,26 +19,26 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
   protected ResponseEntity<Object> handleIllegalArgument(
       RuntimeException exception, WebRequest request) {
     return handleExceptionInternal(
-        exception, "Illegal argument", new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+        exception, exception.getCause(), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
   }
 
   @ExceptionHandler(value = {NoSuchElementException.class, NotFoundException.class})
   protected ResponseEntity<Object> handleNotFound(RuntimeException exception, WebRequest request) {
     return handleExceptionInternal(
-        exception, "Not Found", new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+        exception, exception.getCause(), new HttpHeaders(), HttpStatus.NOT_FOUND, request);
   }
 
   @ExceptionHandler(value = IllegalStateException.class)
   protected ResponseEntity<Object> handleIllegalState(
       RuntimeException exception, WebRequest request) {
     return handleExceptionInternal(
-        exception, "Illegal State", new HttpHeaders(), HttpStatus.CONFLICT, request);
+        exception, exception.getCause(), new HttpHeaders(), HttpStatus.CONFLICT, request);
   }
 
   @ExceptionHandler
   protected ResponseEntity<Object> handleAnyElse(RuntimeException exception, WebRequest request) {
 
     return handleExceptionInternal(
-        exception, "Server Error", new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
+        exception, exception.getCause(), new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
   }
 }

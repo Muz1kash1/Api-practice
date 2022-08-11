@@ -90,4 +90,14 @@ public class ControllerImpl implements OrdersApi {
   public ResponseEntity<OrderDTO> updateOrder(Long orderId, OrderDTO orderDTO) {
     return ResponseEntity.accepted().body(orderRepository.replaceOrder(orderId, orderDTO));
   }
+
+  /**
+   * @param requestBody Put order list (required)
+   * @return
+   */
+  @Override
+  public ResponseEntity<List<OrderDTO>> uploadOrderList(List<String> requestBody) {
+//    return ResponseEntity.accepted().body(ordersService.addOrderList(requestBody));
+    return ResponseEntity.accepted().body(List.of(new OrderDTO()));
+  }
 }

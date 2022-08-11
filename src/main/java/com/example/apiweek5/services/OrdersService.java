@@ -51,4 +51,13 @@ public class OrdersService {
             getAllOrdersByStatus(status).stream(), getAllOrdersByDates(start, end).stream())
         .toList();
   }
+
+  public List<OrderDTO> addOrderList(List<String> requestBody) {
+    List<OrderDTO> orderDTOList = new ArrayList<>();
+    for (String raw : requestBody) {
+      orderDTOList.add(OrderMapper.map(raw));
+      orderRepository.addOrder(OrderMapper.map(raw));
+    }
+    return orderDTOList;
+  }
 }
