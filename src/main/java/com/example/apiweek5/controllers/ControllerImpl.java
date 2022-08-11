@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.NativeWebRequest;
 
+import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -50,7 +51,8 @@ public class ControllerImpl implements OrdersApi {
   @Override
   public ResponseEntity<OrderDTO> addOrder(OrderDTO orderDTO) {
     orderRepository.addOrder(orderDTO);
-    return ResponseEntity.accepted().body(orderRepository.getOrder(orderDTO.getProductID()));
+    return ResponseEntity.created(URI.create("http://localhost:8080/orders/" + orderDTO.getProductID()))
+        .body(orderRepository.getOrder(orderDTO.getProductID()));
   }
 
   /**
@@ -92,12 +94,17 @@ public class ControllerImpl implements OrdersApi {
   }
 
   /**
+   * @param body Put order list (required)
+   * @return
+   */
+
+  /**
    * @param requestBody Put order list (required)
    * @return
    */
   @Override
-  public ResponseEntity<List<OrderDTO>> uploadOrderList(List<String> requestBody) {
-//    return ResponseEntity.accepted().body(ordersService.addOrderList(requestBody));
-    return ResponseEntity.accepted().body(List.of(new OrderDTO()));
+  public ResponseEntity<List<OrderDTO>> uploadOrderList(Object requestBody) {
+    return ResponseEntity.accepted()
+        .body(ordersService.addOrderList(List.of(requestBody.toString())));
   }
 }

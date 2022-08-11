@@ -11,9 +11,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import javax.ws.rs.NotFoundException;
 import java.util.NoSuchElementException;
 
-
 @ControllerAdvice
-
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
   @ExceptionHandler(value = IllegalArgumentException.class)
   protected ResponseEntity<Object> handleIllegalArgument(
@@ -39,6 +37,10 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
   protected ResponseEntity<Object> handleAnyElse(RuntimeException exception, WebRequest request) {
 
     return handleExceptionInternal(
-        exception, exception.getCause(), new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
+        exception,
+        exception.getCause(),
+        new HttpHeaders(),
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        request);
   }
 }

@@ -55,7 +55,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/orderDTO'
-            application/csv:
+            text/csv:
               { }
 
         '400':
@@ -131,14 +131,12 @@ paths:
       requestBody:
         description: Put order list
         content:
-          application/csv:
+          text/csv:
             schema:
-              type: array
-              items:
-                type: string
+              {}
         required: true
       responses:
-        '200':
+        '202':
           description: Successful operation
           content:
             application/json:
@@ -246,7 +244,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/orderDTO'
-            application/csv:
+            text/csv:
               { }
 
         '400':
