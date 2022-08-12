@@ -31,8 +31,9 @@ public class OrderRepository {
     return orderDTOList;
   }
 
-  public void addOrder(OrderDTO orderDTO) {
+  public OrderDTO addOrder(OrderDTO orderDTO) {
     orderRepo.putIfAbsent(orderDTO.getProductID(), orderDTO);
+    return orderDTO;
   }
 
   public void deleteOrder(Long orderId) {

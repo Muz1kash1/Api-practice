@@ -55,34 +55,32 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/orderDTO'
-            #text/csv:
-              #schema:
-               # {}
+
 
         '400':
           description: Invalid ID supplied
           content:
             application/problem+json:
               schema:
-                type: string
+                type: object
         '404':
           description: order not found
           content:
             application/problem+json:
               schema:
-                type: string
+                type: object
         '409':
           description: Illegal State
           content:
             application/problem+json:
               schema:
-                type: string
+                type: object
         '500':
           description: Server Error
           content:
             application/problem+json:
               schema:
-                type: string
+                type: object
 
 
     post:
@@ -110,19 +108,19 @@ paths:
           content:
             application/problem+json:
               schema:
-                type: string
+                type: object
         '409':
           description: Illegal State
           content:
             application/problem+json:
               schema:
-                type: string
+                type: object
         '500':
           description: Server Error
           content:
             application/problem+json:
               schema:
-                type: string
+                type: object
     put:
       tags:
         - order
@@ -151,19 +149,19 @@ paths:
           content:
             application/problem+json:
               schema:
-                type: string
+                type: object
         '409':
           description: Illegal State
           content:
             application/problem+json:
               schema:
-                type: string
+                type: object
         '500':
           description: Server Error
           content:
             application/problem+json:
               schema:
-                type: string
+                type: object
 
 
 
@@ -205,25 +203,25 @@ paths:
           content:
             application/problem+json:
               schema:
-                type: string
+                type: object
         '405':
           description: Validation exception
           content:
             application/problem+json:
               schema:
-                type: string
+                type: object
         '409':
           description: Illegal State
           content:
             application/problem+json:
               schema:
-                type: string
+                type: object
         '500':
           description: Server Error
           content:
             application/problem+json:
               schema:
-                type: string
+                type: object
 
     get:
       tags:
@@ -255,25 +253,25 @@ paths:
           content:
             application/problem+json:
               schema:
-                type: string
+                type: object
         '404':
           description: order not found
           content:
             application/problem+json:
               schema:
-                type: string
+                type: object
         '409':
           description: Illegal State
           content:
             application/problem+json:
               schema:
-                type: string
+                type: object
         '500':
           description: Server Error
           content:
             application/problem+json:
               schema:
-                type: string
+                type: object
     patch:
       tags:
         - order

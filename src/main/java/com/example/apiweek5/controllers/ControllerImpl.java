@@ -24,6 +24,7 @@ import javax.ws.rs.Consumes;
 import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RestController
@@ -103,7 +104,11 @@ public class ControllerImpl implements OrdersApi {
    */
   @Override
   public ResponseEntity<OrderDTO> getOrderById(Long orderId) {
-    return ResponseEntity.ok().body(orderRepository.getOrder(orderId));
+    if (orderRepository.getOrder(orderId) != null) {
+      return ResponseEntity.ok().body(orderRepository.getOrder(orderId));
+    } else {
+      throw new NoSuchElementException();
+    }
   }
 
   /**
