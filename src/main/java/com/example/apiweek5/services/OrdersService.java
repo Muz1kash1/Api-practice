@@ -2,6 +2,7 @@ package com.example.apiweek5.services;
 
 import com.example.apiweek5.repositiries.OrderRepository;
 import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
 import org.openapitools.model.OrderDTO;
 import org.openapitools.model.Status;
@@ -9,11 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.io.Reader;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -83,5 +88,28 @@ public class OrdersService {
     }
     orderDTOList.sort(Comparator.comparing(OrderDTO::getDate));
     return orderDTOList;
+  }
+
+  public ByteArrayInputStream csvOut(List<OrderDTO> orderDTOList) {
+    try {
+      ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      CSVPrinter csvPrinter = new CSVPrinter(new PrintWriter(outputStream), CSVFormat.DEFAULT);
+      for (OrderDTO dto : orderDTOList) {
+        List<String> data =
+            Arrays.asList(
+                dto.getId(),
+                String.valueOf(dto.getProductID()),
+                String.valueOf(dto.getQuantity()),
+                String.valueOf(dto.getDate()),
+                String.valueOf(dto.getStatus()),
+                String.valueOf(dto.getComplete()));
+        csvPrinter.printRecord(data);
+      }
+      csvPrinter.flush();
+      return new ByteArrayInputStream(outputStream.toByteArray());
+
+    } catch (IOException e) {
+      throw new RuntimeException("fail to import data to csv: " + e.getMessage());
+    }
   }
 }
