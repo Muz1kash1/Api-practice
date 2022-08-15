@@ -56,7 +56,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         .body(problem);
   }
 
-  @ExceptionHandler(RuntimeException.class)
+  @ExceptionHandler(Exception.class)
   protected ResponseEntity<Object> handleAnyElse() {
     Problem problem =
         Problem.builder()

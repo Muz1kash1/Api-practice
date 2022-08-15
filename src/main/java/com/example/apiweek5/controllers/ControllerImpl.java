@@ -1,11 +1,11 @@
 package com.example.apiweek5.controllers;
 
-import com.example.apiweek5.RestResponseEntityExceptionHandler;
 import com.example.apiweek5.repositiries.OrderRepository;
 import com.example.apiweek5.services.OrdersService;
 import org.openapitools.api.OrdersApi;
 import org.openapitools.model.OrderDTO;
 import org.openapitools.model.OrderUpdateDTO;
+import org.openapitools.model.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -30,9 +30,15 @@ import java.util.Optional;
 
 @RestController
 public class ControllerImpl implements OrdersApi {
-  @Autowired RestResponseEntityExceptionHandler restResponseEntityExceptionHandler;
   @Autowired OrderRepository orderRepository;
   @Autowired OrdersService ordersService;
+
+  /**
+   * @param status status of order (optional)
+   * @param startDateTime Date of start (optional)
+   * @param endDateTime Date of end (optional)
+   * @return
+   */
 
   /**
    * @return
@@ -40,7 +46,7 @@ public class ControllerImpl implements OrdersApi {
   @Override
   @Consumes(MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<List<OrderDTO>> getAllOrders(
-      String status, OffsetDateTime startDateTime, OffsetDateTime endDateTime) {
+      Status status, OffsetDateTime startDateTime, OffsetDateTime endDateTime) {
 
     return ResponseEntity.ok()
         .body(ordersService.getAllOrdersByStatusAndPeriod(status, startDateTime, endDateTime));
@@ -48,7 +54,7 @@ public class ControllerImpl implements OrdersApi {
 
   @GetMapping(value = "/orders", produces = "application/octet-stream")
   public ResponseEntity<InputStreamResource> getAllOrdersCsv(
-          @RequestParam(value = "status", required = false) @Valid String status,
+          @RequestParam(value = "status", required = false) @Valid Status status,
           @RequestParam(value = "startDateTime", required = false)
           @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
           @Valid
@@ -81,6 +87,11 @@ public class ControllerImpl implements OrdersApi {
   }
 
   /**
+   * @param orderId ID of order to return (required)
+   * @return
+   */
+
+  /**
    * @param orderDTO Create a new order in the store (required)
    * @return
    */
@@ -88,8 +99,8 @@ public class ControllerImpl implements OrdersApi {
   public ResponseEntity<OrderDTO> addOrder(OrderDTO orderDTO) {
     orderRepository.addOrder(orderDTO);
     return ResponseEntity.created(
-            URI.create("http://localhost:8080/orders/" + orderDTO.getProductID()))
-        .body(orderRepository.getOrder(orderDTO.getProductID()));
+            URI.create("http://localhost:8080/orders/" + orderDTO.getProductId()))
+        .body(orderRepository.getOrder(orderDTO.getProductId()));
   }
 
   /**

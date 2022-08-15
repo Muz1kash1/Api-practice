@@ -49,9 +49,9 @@ public class OrdersService {
   }
 
   public List<OrderDTO> getAllOrdersByStatusAndPeriod(
-      String status, OffsetDateTime start, OffsetDateTime end) {
+      Status status, OffsetDateTime start, OffsetDateTime end) {
     return Stream.concat(
-            getAllOrdersByStatus(status).stream(), getAllOrdersByDates(start, end).stream())
+            getAllOrdersByStatus(status.getValue()).stream(), getAllOrdersByDates(start, end).stream())
         .toList();
   }
 
@@ -65,7 +65,7 @@ public class OrdersService {
         if (record.stream().toList().size() > 2) {
           OrderDTO tempDTO = new OrderDTO();
           tempDTO.setId(record.stream().toList().get(0));
-          tempDTO.setProductID(Long.parseLong(record.stream().toList().get(1)));
+          tempDTO.setProductId(Long.parseLong(record.stream().toList().get(1)));
           tempDTO.setQuantity(Integer.parseInt(record.stream().toList().get(2)));
           tempDTO.setDate(OffsetDateTime.parse(record.stream().toList().get(3)));
           tempDTO.setStatus(Status.valueOf(record.stream().toList().get(4)));
@@ -89,7 +89,7 @@ public class OrdersService {
         List<String> data =
             Arrays.asList(
                 dto.getId(),
-                String.valueOf(dto.getProductID()),
+                String.valueOf(dto.getProductId()),
                 String.valueOf(dto.getQuantity()),
                 String.valueOf(dto.getDate()),
                 String.valueOf(dto.getStatus()),

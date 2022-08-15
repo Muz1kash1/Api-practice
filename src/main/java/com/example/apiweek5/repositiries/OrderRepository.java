@@ -32,7 +32,7 @@ public class OrderRepository {
   }
 
   public OrderDTO addOrder(OrderDTO orderDTO) {
-    orderRepo.putIfAbsent(orderDTO.getProductID(), orderDTO);
+    orderRepo.putIfAbsent(orderDTO.getProductId(), orderDTO);
     return orderDTO;
   }
 

@@ -37,7 +37,7 @@ public class OrderControllerTest {
   @DisplayName("POST /orders")
   void postOrdersTest() throws Exception {
     OrderDTO orderDTO = new OrderDTO();
-    orderDTO.setProductID(360641l);
+    orderDTO.setProductId(360641l);
     orderDTO.setQuantity(88);
     orderDTO.setId("CG2DD7ZD3ADBFF9Q");
     orderDTO.setDate(OffsetDateTime.parse("1970-01-01T16:52:01.83Z"));
@@ -47,7 +47,7 @@ public class OrderControllerTest {
     when(repository.getOrder(any())).thenReturn(orderDTO);
     when(repository.addOrder(any())).thenReturn(orderDTO);
     String jsonToPost =
-        "{\"id\": \"CG2DD7ZD3ADBFF9Q\",\"productID\": 360641, \"quantity\": 88 , \"date\" : \"1970-01-01T16:52:01.83Z\", \"status\": \"placed\", \"complete\": false }";
+        "{\"id\": \"CG2DD7ZD3ADBFF9Q\",\"productId\": 360641, \"quantity\": 88 , \"date\" : \"1970-01-01T16:52:01.83Z\", \"status\": \"PLACED\", \"complete\": false }";
 
     mockMvc
         .perform(post("/orders").contentType(MediaType.APPLICATION_JSON).content(jsonToPost))
@@ -61,7 +61,7 @@ public class OrderControllerTest {
     OrderDTO order1 = new OrderDTO();
     OrderDTO order2 = new OrderDTO();
 
-    order1.setProductID(13l);
+    order1.setProductId(13l);
     order2.setQuantity(90);
     when(ordersService.getAllOrdersByStatusAndPeriod(any(), any(), any()))
         .thenReturn(List.of(order1, order2));
@@ -70,7 +70,7 @@ public class OrderControllerTest {
         .perform(get("/orders").contentType(MediaType.APPLICATION_JSON).accept(MediaType.ALL_VALUE))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.[0].productID", is(13)))
+        .andExpect(jsonPath("$.[0].productId", is(13)))
         .andExpect(jsonPath("$.[1].quantity", is(90)));
   }
 
@@ -84,7 +84,7 @@ public class OrderControllerTest {
   @DisplayName("PATCH /orders/{id}")
   void patchOrderTest() throws Exception {
 
-    String jsonToPost = "{ \"quantity\": 88 , \"status\": \"placed\", \"complete\": false }";
+    String jsonToPost = "{ \"quantity\": 88 , \"status\": \"PLACED\", \"complete\": false }";
 
     when(repository.updateOrder(anyLong(), any(OrderUpdateDTO.class))).thenReturn(new OrderDTO());
 
@@ -111,20 +111,20 @@ public class OrderControllerTest {
   @DisplayName("PUT /orders csvfile")
   void putBigCsvFile() throws Exception {
     OrderDTO order1 = new OrderDTO();
-    order1.setProductID(13l);
+    order1.setProductId(13l);
     when(ordersService.addOrderList(any())).thenReturn(List.of(order1));
 
     mockMvc.perform(put("/orders").contentType(MediaType.parseMediaType("text/csv")).content("skldjfdlk"))
             .andExpect(status().isAccepted())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.[0].productID",is(13)));
+            .andExpect(jsonPath("$.[0].productId",is(13)));
   }
 
   @Test
   @DisplayName("PUT /orders/{id}")
   void putOrder() throws Exception {
     OrderDTO orderDTO = new OrderDTO();
-    orderDTO.setProductID(360641l);
+    orderDTO.setProductId(360641l);
     orderDTO.setQuantity(88);
     orderDTO.setId("CG2DD7ZD3ADBFF9Q");
     orderDTO.setDate(OffsetDateTime.parse("1970-01-01T16:52:01.83Z"));
@@ -132,7 +132,7 @@ public class OrderControllerTest {
     orderDTO.setStatus(Status.PLACED);
 
     String jsonToPost =
-            "{\"id\": \"CG2DD7ZD3ADBFF9Q\",\"productID\": 360641, \"quantity\": 88 , \"date\" : \"1970-01-01T16:52:01.83Z\", \"status\": \"placed\", \"complete\": false }";
+            "{\"id\": \"CG2DD7ZD3ADBFF9Q\",\"productId\": 360641, \"quantity\": 88 , \"date\" : \"1970-01-01T16:52:01.83Z\", \"status\": \"PLACED\", \"complete\": false }";
 
 
     when(repository.replaceOrder(any(),any())).thenReturn(orderDTO);
