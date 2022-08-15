@@ -9,23 +9,19 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import org.zalando.problem.Problem;
 
-import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 import java.util.NoSuchElementException;
 
-import static org.zalando.problem.Status.BAD_REQUEST;
-import static org.zalando.problem.Status.CONFLICT;
-import static org.zalando.problem.Status.INTERNAL_SERVER_ERROR;
-import static org.zalando.problem.Status.NOT_FOUND;
+import static org.zalando.problem.Status.*;
 
 @ControllerAdvice
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
-  @ExceptionHandler(value = HttpClientErrorException.BadRequest.class)
+  @ExceptionHandler(value = {HttpClientErrorException.BadRequest.class, IllegalArgumentException.class})
   protected ResponseEntity<Object> handleIllegalArgument() {
     Problem problem =
         Problem.builder()
-            .withTitle("IllegalA Argument Exception")
+            .withTitle("Illegal Argument Exception")
             .withDetail("Unknown Arguments")
             .withStatus(BAD_REQUEST)
             .build();
@@ -38,7 +34,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
   protected ResponseEntity<Object> handleNotFound() {
     Problem problem =
         Problem.builder()
-            .withTitle("Not found")
+            .withTitle("Not found or not such element exception")
             .withDetail("Not found")
             .withStatus(NOT_FOUND)
             .build();
@@ -51,11 +47,11 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
   protected ResponseEntity<Object> handleIllegalState() {
     Problem problem =
         Problem.builder()
-            .withTitle("IllegalA Argument Exception")
+            .withTitle("Illegal State Exception")
             .withDetail("Unknown Arguments")
             .withStatus(CONFLICT)
             .build();
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+    return ResponseEntity.status(HttpStatus.CONFLICT)
         .contentType(MediaType.APPLICATION_PROBLEM_JSON)
         .body(problem);
   }
@@ -64,7 +60,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
   protected ResponseEntity<Object> handleAnyElse() {
     Problem problem =
         Problem.builder()
-            .withTitle("Server Error")
+            .withTitle("Internal server error")
             .withDetail("Error")
             .withStatus(INTERNAL_SERVER_ERROR)
             .build();

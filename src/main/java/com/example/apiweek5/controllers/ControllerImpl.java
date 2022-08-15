@@ -21,6 +21,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
+import java.io.IOException;
 import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -45,26 +46,29 @@ public class ControllerImpl implements OrdersApi {
         .body(ordersService.getAllOrdersByStatusAndPeriod(status, startDateTime, endDateTime));
   }
 
-  @GetMapping(value = "/orders", produces = "text/csv")
+  @GetMapping(value = "/orders", produces = "application/octet-stream")
   public ResponseEntity<InputStreamResource> getAllOrdersCsv(
-      @RequestParam(value = "status", required = false) @Valid String status,
-      @RequestParam(value = "startDateTime", required = false)
+          @RequestParam(value = "status", required = false) @Valid String status,
+          @RequestParam(value = "startDateTime", required = false)
           @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
           @Valid
           OffsetDateTime startDateTime,
-      @RequestParam(value = "endDateTime", required = false)
+          @RequestParam(value = "endDateTime", required = false)
           @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
           @Valid
-          OffsetDateTime endDateTime) {
+          OffsetDateTime endDateTime) throws IOException {
 
     String filename = "myfile.csv";
+
     InputStreamResource file =
         new InputStreamResource(
             ordersService.csvOut(
                 ordersService.getAllOrdersByStatusAndPeriod(status, startDateTime, endDateTime)));
     HttpHeaders headers = new HttpHeaders();
     headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename);
-    headers.set(HttpHeaders.CONTENT_TYPE, "text/csv");
+    headers.set(HttpHeaders.CONTENT_TYPE, "application/octet-stream");
+
+
     return new ResponseEntity<>(file, headers, HttpStatus.OK);
   }
 
@@ -95,7 +99,7 @@ public class ControllerImpl implements OrdersApi {
   @Override
   public ResponseEntity<Void> deleteOrder(Long orderId) {
     orderRepository.deleteOrder(orderId);
-    return ResponseEntity.noContent().build();
+    return ResponseEntity.ok().build();
   }
 
   /**
@@ -104,8 +108,9 @@ public class ControllerImpl implements OrdersApi {
    */
   @Override
   public ResponseEntity<OrderDTO> getOrderById(Long orderId) {
-    if (orderRepository.getOrder(orderId) != null) {
-      return ResponseEntity.ok().body(orderRepository.getOrder(orderId));
+    OrderDTO orderDTOById = orderRepository.getOrder(orderId);
+    if (orderDTOById != null) {
+      return ResponseEntity.ok().body(orderDTOById);
     } else {
       throw new NoSuchElementException();
     }
