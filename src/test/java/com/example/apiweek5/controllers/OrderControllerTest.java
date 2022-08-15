@@ -2,6 +2,8 @@ package com.example.apiweek5.controllers;
 
 import com.example.apiweek5.repositiries.OrderRepository;
 import com.example.apiweek5.services.OrdersService;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.OrderDTO;
@@ -14,15 +16,25 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintWriter;
 import java.time.OffsetDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -57,7 +69,7 @@ public class OrderControllerTest {
 
   @Test
   @DisplayName("GET /orders json")
-  void getOrdersTest() throws Exception {
+  void getOrdersJsonTest() throws Exception {
     OrderDTO order1 = new OrderDTO();
     OrderDTO order2 = new OrderDTO();
 
@@ -72,6 +84,49 @@ public class OrderControllerTest {
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.[0].productId", is(13)))
         .andExpect(jsonPath("$.[1].quantity", is(90)));
+  }
+
+  @Test
+  @DisplayName("GET /orders csv")
+  void getOrdersCsvTest() throws Exception {
+    OrderDTO orderDTO = new OrderDTO();
+    orderDTO.setProductId(360641l);
+    orderDTO.setQuantity(88);
+    orderDTO.setId("CG2DD7ZD3ADBFF9Q");
+    orderDTO.setDate(OffsetDateTime.parse("1970-01-01T16:52:01.83Z"));
+    orderDTO.setComplete(false);
+    orderDTO.setStatus(Status.PLACED);
+
+    List<OrderDTO> orderDTOList = List.of(orderDTO);
+
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    CSVPrinter csvPrinter = new CSVPrinter(new PrintWriter(outputStream), CSVFormat.DEFAULT);
+    for (OrderDTO dto : orderDTOList) {
+      List<String> data =
+          Arrays.asList(
+              dto.getId(),
+              String.valueOf(dto.getProductId()),
+              String.valueOf(dto.getQuantity()),
+              String.valueOf(dto.getDate()),
+              String.valueOf(dto.getStatus()),
+              String.valueOf(dto.getComplete()));
+      csvPrinter.printRecord(data);
+    }
+    csvPrinter.flush();
+    ByteArrayInputStream byteArrayInputStream =
+        new ByteArrayInputStream(outputStream.toByteArray());
+
+    when(ordersService.getAllOrdersByStatusAndPeriod(
+            any(Status.class), any(OffsetDateTime.class), any(OffsetDateTime.class)))
+        .thenReturn(List.of(orderDTO));
+    when(ordersService.csvOut(any())).thenReturn(byteArrayInputStream);
+
+    mockMvc
+        .perform(
+            get("/orders")
+                .accept(MediaType.parseMediaType(MediaType.APPLICATION_OCTET_STREAM_VALUE)))
+        .andExpect(content().contentType(MediaType.parseMediaType("application/octet-stream")))
+        .andExpect(status().isOk());
   }
 
   @Test
@@ -114,10 +169,12 @@ public class OrderControllerTest {
     order1.setProductId(13l);
     when(ordersService.addOrderList(any())).thenReturn(List.of(order1));
 
-    mockMvc.perform(put("/orders").contentType(MediaType.parseMediaType("text/csv")).content("skldjfdlk"))
-            .andExpect(status().isAccepted())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.[0].productId",is(13)));
+    mockMvc
+        .perform(
+            put("/orders").contentType(MediaType.parseMediaType("text/csv")).content("skldjfdlk"))
+        .andExpect(status().isAccepted())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.[0].productId", is(13)));
   }
 
   @Test
@@ -132,13 +189,13 @@ public class OrderControllerTest {
     orderDTO.setStatus(Status.PLACED);
 
     String jsonToPost =
-            "{\"id\": \"CG2DD7ZD3ADBFF9Q\",\"productId\": 360641, \"quantity\": 88 , \"date\" : \"1970-01-01T16:52:01.83Z\", \"status\": \"PLACED\", \"complete\": false }";
+        "{\"id\": \"CG2DD7ZD3ADBFF9Q\",\"productId\": 360641, \"quantity\": 88 , \"date\" : \"1970-01-01T16:52:01.83Z\", \"status\": \"PLACED\", \"complete\": false }";
 
+    when(repository.replaceOrder(any(), any())).thenReturn(orderDTO);
 
-    when(repository.replaceOrder(any(),any())).thenReturn(orderDTO);
-
-    mockMvc.perform(put("/orders/1").contentType(MediaType.APPLICATION_JSON).content(jsonToPost))
-            .andExpect(status().isAccepted())
-            .andExpect(content().json(jsonToPost));
+    mockMvc
+        .perform(put("/orders/1").contentType(MediaType.APPLICATION_JSON).content(jsonToPost))
+        .andExpect(status().isAccepted())
+        .andExpect(content().json(jsonToPost));
   }
 }
